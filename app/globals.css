@@ -65,3 +65,15 @@
   }
 }
 
+label{
+  font-family: cursive;
+}
+h1,h2,h3{
+  margin-right: 15px;
+  margin-left: 15px;
+}
+ .cursive{
+  font-family: cursive;
+ }
+
+ 

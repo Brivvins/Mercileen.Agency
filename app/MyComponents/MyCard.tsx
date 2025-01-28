@@ -16,7 +16,7 @@ type cardProps = {
 
 const MyCard = ({title,description, content, footer}: cardProps) => {
   return (
-    <Card>
+    <Card className=" shadow-sm transform transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:shadow-primary z-10">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>

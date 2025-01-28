@@ -11,7 +11,7 @@ const Sale = () => {
         Check out Land or Houses that are on sale.
       </h1>
       </div>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         <div className="m-7">
           <MyCard
             title="Houses for Sale"

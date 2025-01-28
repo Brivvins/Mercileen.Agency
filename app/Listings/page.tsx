@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const Listings = () => {
+  
   return (
     <>
       <div className="flex justify-center">
@@ -12,7 +13,7 @@ const Listings = () => {
         </h1>
       </div>
 
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2">
         <div className="m-7">
           <MyCard
             title="Properties for Sale"
