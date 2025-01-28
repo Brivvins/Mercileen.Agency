@@ -1,8 +1,8 @@
 "use client";
 
 import AdminCardComponent from "@/app/MyComponents/adminProperty";
-import { withAuth } from "@/app/MyComponents/WithAuth";
 import supabase from "@/supabase/client";
+import { RedirectToSignIn, useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
 
@@ -10,6 +10,7 @@ const AdminHouses = () => {
   const [properties, setProperties] = useState<Properties[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isLoaded, isSignedIn } = useAuth();
 
   const getData = async () => {
     try {
@@ -73,6 +74,14 @@ const AdminHouses = () => {
 
   }
 
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!isSignedIn) {
+    return <RedirectToSignIn redirectUrl="/admin/management" />;
+  }
+
 
   return (
     <>
@@ -92,4 +101,4 @@ const AdminHouses = () => {
   )
 }
 
-export default withAuth(AdminHouses);
+export default AdminHouses;

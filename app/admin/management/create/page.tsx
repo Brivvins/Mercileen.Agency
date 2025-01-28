@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import supabase from "@/supabase/client";
-import { withAuth } from "@/app/MyComponents/WithAuth";
+import { RedirectToSignIn, useAuth } from "@clerk/nextjs";
 
 type InsertProperty = {
   id?: number;
@@ -32,7 +32,7 @@ type InsertProperty = {
   bathrooms?: number | null;
   location: string;
   is_available?: "yes" | "no";
-  image: string; // Will store the public URL
+  image: string;
   created_at?: string;
   updated_at?: string;
 };
@@ -48,12 +48,13 @@ function InsertPropertyDialog() {
     bathrooms: null,
     location: "",
     is_available: "yes",
-    image: "", 
+    image: "",
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [file, setFile] = useState<File | null>(null); 
+  const [file, setFile] = useState<File | null>(null);
+  const { isLoaded, isSignedIn } = useAuth();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -64,7 +65,7 @@ function InsertPropertyDialog() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = e.target.files?.[0] || null;
-    setFile(uploadedFile); 
+    setFile(uploadedFile);
   };
 
   const handleSelectChange = (
@@ -85,19 +86,18 @@ function InsertPropertyDialog() {
         );
       }
 
-      let imageUrl = formData.image; 
+      let imageUrl = formData.image;
 
       if (file) {
         const fileName = `${Date.now()}-${file.name}`;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("property-images") 
+          .from("property-images")
           .upload(fileName, file);
 
         if (uploadError) {
-            console.error(error);
+          console.error(error);
           throw new Error("Failed to upload image to Supabase.");
-          
         }
 
         // Get the public URL of the uploaded file
@@ -110,10 +110,9 @@ function InsertPropertyDialog() {
         }
       }
 
-    
       const payload: InsertProperty = {
         ...formData,
-        image: imageUrl, 
+        image: imageUrl,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
@@ -128,14 +127,22 @@ function InsertPropertyDialog() {
 
       console.log("Inserted data:", data);
 
-      alert("Property inserted successfully!"); 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      alert("Property inserted successfully!");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || "An error occurred.");
     } finally {
       setLoading(false);
     }
   };
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  if (!isSignedIn) {
+    return <RedirectToSignIn redirectUrl="/admin/management" />;
+  }
 
   return (
     <div className=" flex justify-center items-center min-h-screen">
@@ -145,7 +152,9 @@ function InsertPropertyDialog() {
             Click below to add a new property
           </h2>
           <DialogTrigger asChild>
-            <Button className="text-xl font-serif shadow-md hover:shadow-cyan-400 hover:text-black  hover:text-2xl">Add New Property</Button>
+            <Button className="text-xl font-serif shadow-md hover:shadow-cyan-400 hover:text-black  hover:text-2xl">
+              Add New Property
+            </Button>
           </DialogTrigger>
         </div>
         <DialogContent>
@@ -253,4 +262,4 @@ function InsertPropertyDialog() {
   );
 }
 
-export default withAuth(InsertPropertyDialog);
+export default InsertPropertyDialog;

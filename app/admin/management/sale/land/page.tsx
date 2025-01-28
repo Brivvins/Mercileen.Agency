@@ -1,7 +1,6 @@
 "use client";
 
 import AdminCardComponent from "@/app/MyComponents/adminProperty";
-import { withAuth } from "@/app/MyComponents/WithAuth";
 import supabase from "@/supabase/client";
 import { useEffect, useState } from "react";
 
@@ -91,4 +90,4 @@ const AdminLand = () => {
   )
 }
 
-export default withAuth(AdminLand);
+export default AdminLand;

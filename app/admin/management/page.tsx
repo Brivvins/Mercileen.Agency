@@ -1,17 +1,25 @@
 "use client";
 
-import { withAuth } from "@/app/MyComponents/WithAuth";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@clerk/nextjs";
+import { RedirectToSignIn, useAuth, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
  function Management() {
   const { user } = useUser();
+  const { isLoaded, isSignedIn } = useAuth();
 
   if (!user) {
     return <div>Loading...</div>;
   }
+   if (!isLoaded) {
+    return null;
+  }
 
+  if (!isSignedIn) {
+    return <RedirectToSignIn redirectUrl="/admin/management" />;
+  }
+
+ 
   return (
     <div className="min-h-screen gap-20 flex flex-col justify-center items-center  text-primary font-bold font-serif ">
       <h1 className=" text-4xl block">Welcome Back, {user.firstName}!</h1>
@@ -35,4 +43,4 @@ import Link from "next/link";
   );
 }
 
-export default withAuth(Management)
+export default Management
